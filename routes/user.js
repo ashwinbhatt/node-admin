@@ -22,6 +22,7 @@ router.post(config.app.baseurl +"/signup", checkAuthen, (req, res) => {
     createUser(username,password, role).then(message=> {
         return res.json({message: message})
     }).catch(err => {
+        console.log(err)
         return res.status(422).json({error: 'Cannot save the User'})
     })    
 });

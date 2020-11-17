@@ -1,6 +1,7 @@
 const mongoose = require('mongoose')
 const express = require('express')
 const app = express()
+app.set('view engine', 'ejs');
 const CONFIG_PATH = '../../configs/node-admin-config.json'
 const config = require(CONFIG_PATH)
 const port = 10000;
@@ -23,11 +24,12 @@ mongoose.connection.on('error', (err)=>{
 require('./models/user')
 
 
+
 // setting up routes from files
 app.use(express.json())
 app.use(require('./routes/user'))
 app.use(require('./test'))
-
+app.use(require('./routes/pages'))
 
 app.listen(port, () => {
     console.log(`Server running on port ${port} 🔥`)

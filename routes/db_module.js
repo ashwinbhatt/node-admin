@@ -16,7 +16,7 @@ const createUser = (username, password, role) => {
                     resolve('User exists')
                     return
                 }
-                bcrypt.hash(password, conf.password.saltRounds)
+                bcrypt.hash(password, config.password.saltRounds)
                         .then( hashedPass => {
                             const user =new User({
                                 username: username,
@@ -35,6 +35,7 @@ const createUser = (username, password, role) => {
                             })
                         });
             }).catch((err) => {
+                console.log(err.message)
                 reject('Could not create User')
                 return 
             })
