@@ -13,7 +13,7 @@ const createUser = (username, password, role) => {
             .then((savedUser) => {
                 if(savedUser){
                     console.log(username +' already exits')
-                    resolve('User exists')
+                    reject(username +' exists')
                     return
                 }
                 bcrypt.hash(password, config.password.saltRounds)

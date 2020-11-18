@@ -23,8 +23,8 @@ router.post(config.app.baseurl +"/signup", checkAuthen, (req, res) => {
         return res.json({message: message})
     }).catch(err => {
         console.log(err)
-        return res.status(422).json({error: 'Cannot save the User'})
-    })    
+        return res.status(422).json({error: err})
+    })
 });
 
 router.post(config.app.baseurl +'/login' ,(req, res) => {
@@ -98,7 +98,6 @@ router.delete(config.app.baseurl +'/delete', checkAuthen, (req, res) => {
 createUser(config.admin.username, config.admin.password, 'admin').then(message => {
     console.log('Created Admin user successfully')
 }).catch(err => {
-    console.log('Error encountered there was not admin user found')
-    console.log(err.message)
+    // console.log(err)
 })
 module.exports = router

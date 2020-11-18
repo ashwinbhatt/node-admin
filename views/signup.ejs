@@ -1,18 +1,54 @@
 <html>
-  <head><title> App login</title></head>
+  <head><title> App SignUp</title></head>
   <body>
     <div style="width: 60%;margin: 0 auto;">
     <form name="form">
-      <h3>Login</h3>
+      <h3>Signup</h3>
       <label for="username">Username</label>
       <input type="text" id='username' name="username" placeholder="Enter username"></form>
       <label for="password">password</label>
-      <input type="text" id="password" name="password" placeholder="Enter password"></input>
-      <p><submit onclick="loginReq()">Login</submit></p>
+      <input type="password" id="password" name="password" placeholder="Enter password"></input>
+      <p></p>
+      <label for="role">Role</label>
+      <input type="text" id="role" name="role" placeholder="Enter role"></input>
+      <p><submit onclick="signupReq()">Sign Up</submit></p>
     </form>
   </body> 
   
   <script>
-      
+    var myHeaders = new Headers();
+    myHeaders.append("Authorization", "token eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZmIwZTNkZDEyNWRkMDI5NWNlMzljODgiLCJ1c2VybmFtZSI6ImFkbWluIiwiaWF0IjoxNjA1NjIwNjU0fQ.tzDkCrDEiqSoqlGYYAIfe79WXPqGlPyZSNViDbcyA4Y");
+    myHeaders.append("Content-Type", "application/json");
+    var userEle = document.getElementById('username'),
+        passEle = document.getElementById('password'),
+        roleEle = document.getElementById('role')
+    var a;
+    function signupReq(){
+        fetch(window.location.href, {
+            method: 'POST',
+            headers: myHeaders,
+            body: JSON.stringify({
+                "username": userEle.value,
+                "password":passEle.value,
+                "role":roleEle.value
+            }),
+            redirect: 'follow'
+        }).then(response =>{
+          if(!response.ok){
+            throw response.json()
+          }
+          return response.json()
+        }).then(result =>{
+          console.log('Valid')
+          console.log(result.message)
+        }).catch(error => {
+          console.log('invalid')
+          error.then(res=> {
+            console.log(res.error)
+          }).catch(err=> {
+            console.log(err)
+          });
+        });
+    }
   </script>
 </html>

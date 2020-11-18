@@ -4,7 +4,7 @@ const app = express()
 app.set('view engine', 'ejs');
 const CONFIG_PATH = '../../configs/node-admin-config.json'
 const config = require(CONFIG_PATH)
-const port = 10000;
+const port = 5000;
 
 // Making config accessable to all files
 process.webConf= config

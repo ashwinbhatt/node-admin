@@ -11,6 +11,9 @@ router.get(config.app.baseurl+'/signup', (req, res) => {
     res.render('signup.ejs')
 });
 
+router.get(config.app.baseurl+'/update', (req, res)=> {
+    res.render('update.ejs')
+})
 
 
 
