@@ -5,7 +5,7 @@ app.set('view engine', 'ejs');
 const CONFIG_PATH = '../../configs/node-admin-config.json'
 const config = require(CONFIG_PATH)
 const port = 5000;
-
+var cookieParser = require('cookie-parser');
 // Making config accessable to all files
 process.webConf= config
 
@@ -27,6 +27,7 @@ require('./models/user')
 
 // setting up routes from files
 app.use(express.json())
+app.use(cookieParser());
 app.use(require('./routes/user'))
 app.use(require('./test'))
 app.use(require('./routes/pages'))

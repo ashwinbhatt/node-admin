@@ -1,0 +1,45 @@
+<html>
+  <head><title> App Delete User</title></head>
+  <body>
+    <div style="width: 60%;margin: 0 auto;">
+    <form name="form">
+      <h3>Delete User</h3>
+      <label for="username">Username</label>
+      <input type="text" id='username' name="username" placeholder="Enter username"></form>
+      <p><submit onclick="deleteReq()">Delete</submit></p>
+    </form>
+  </body> 
+  
+  <script>
+    var myHeaders = new Headers();
+    var userEle = document.getElementById('username');
+    myHeaders.append("Authorization", "token eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZmIwZTNkZDEyNWRkMDI5NWNlMzljODgiLCJ1c2VybmFtZSI6ImFkbWluIiwiaWF0IjoxNjA1NjIwNjU0fQ.tzDkCrDEiqSoqlGYYAIfe79WXPqGlPyZSNViDbcyA4Y");
+    myHeaders.append("Content-Type", "application/json");
+    function deleteReq(){
+
+          fetch(window.location.href, {
+            method: 'DELETE',
+            headers: myHeaders,
+            body: JSON.stringify({
+                        "username":userEle.value
+                      }),
+            redirect: 'follow'
+          }).then(response => {
+            if(!response.ok){
+              throw response.json()
+            }
+            return response.json()
+          }).then(result => {
+            console.log('Valid')
+            console.log(result.token)
+          }).catch(error => {
+            console.log('Invalid')
+            error.then(res => {
+              console.log(res.error)
+            }).catch(err => {
+              console.log(err)
+            })
+          })
+    }
+  </script>
+</html>

@@ -56,6 +56,8 @@ const readUser =  (userSearchData) => {
             }
             resolve(savedUser)
             return
+        }).catch(err=> {
+            reject(err.message)
         })
     })
 }

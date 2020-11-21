@@ -10,12 +10,15 @@
       <input type="text" id="password" name="password" placeholder="Enter password"></input>
       <p><submit onclick="loginReq()">Login</submit></p>
     </form>
+
+    <button onclick="logoutReq()">Logout</button>
   </body> 
   
   <script>
     var myHeaders = new Headers();
     var userEle = document.getElementById('username'), passEle = document.getElementById('password');
     myHeaders.append("Content-Type", "application/json");
+    var logout_url ='http://'+ document.location.host + '<%=url_base  %>' + '/logout';
     function loginReq(){
 
           fetch(window.location.href, {
@@ -26,9 +29,40 @@
                         "password":passEle.value
                       }),
             redirect: 'follow'
-          }).then(response => response.json())
-            .then(result => console.log(result.token))
-            .catch(error => console.log('error', error));
+          }).then(response => {
+            if(!response.ok){
+              throw response.json()
+            }
+            return response.json()
+          }).then(result => {
+            console.log('Valid')
+            console.log(result.message)
+            // document.cookie= "token="+result.token
+          }).catch(error => {
+            console.log('Invalid')
+            error.then(res => {
+              console.log(res.error)
+            }).catch(err => {
+              console.log(err)
+            })
+          });
     }
+
+    function logoutReq(){
+      fetch(logout_url, {
+        method: 'POST',
+        headers: myHeaders
+      }).then(response => {
+        return response.json();
+      }).then(result=> {
+        console.log(result.message);
+      }).catch(err=> {
+        console.log(err);
+      })
+    }
+
+
+
+
   </script>
 </html>

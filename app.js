@@ -3,7 +3,7 @@ const express = require('express')
 const app = express()
 const CONFIG_PATH = '../../configs/node-admin-config.json'
 const config = require(CONFIG_PATH)
-
+const cookieParser = require('cookie-parser');
 
 // Making config accessable to all files
 process.webConf= config
@@ -29,6 +29,7 @@ require('./models/user')
 
 // setting up routes from files
 app.use(express.json())
+app.use(cookieParser());
 app.use(require('./routes/user'))
 app.use(require('./test'))
 

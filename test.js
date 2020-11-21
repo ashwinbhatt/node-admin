@@ -6,7 +6,7 @@ const router = express.Router()
 const {checkAuthen} = require('./middlewares/middlewares')
 
 
-router.get('/privilaged', checkAuthen, (req, res)=> {
+router.get('/secure', checkAuthen, (req, res)=> {
     var time = new Date(Date.now())
     // console.log(res.locals.authUser)
     const {authUser} = res.locals 

@@ -22,7 +22,20 @@
     var userEle = document.getElementById('username'),
         passEle = document.getElementById('password'),
         roleEle = document.getElementById('role')
-    var a;
+        
+    
+    const checkCookie = (cookieName) => {
+      return new Promise((resolve, reject) => {
+          document.cookie.split(';').forEach(cookie => {
+              const cookie_split = cookie.split('=');
+              if(cookie_split[0] == cookieName){
+                  resolve(cookie_split[1])
+              }
+          })
+        })
+    };
+
+
     function signupReq(){
         fetch(window.location.href, {
             method: 'POST',

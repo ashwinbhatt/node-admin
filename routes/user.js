@@ -42,7 +42,8 @@ router.post(config.app.baseurl +'/login' ,(req, res) => {
             if(doMatch){
                 const token = jwt.sign({_id : savedUser._id, username: savedUser.username}, JWT_SECRET)
                 console.log('User logged in => '+savedUser.username)
-                res.json({token : token})
+                res.cookie('token', token);
+                res.json({message: 'Logged in '}) 
             }else{
                 return res.status(401).json({error : 'Invalid username or password'})
             }
@@ -51,9 +52,15 @@ router.post(config.app.baseurl +'/login' ,(req, res) => {
             return res.status(401).json({error : 'Invalid username or password'})            
         })
     }).catch((err)=> {
-        res.status(401).json({error: 'Cannot delete'})
+        res.status(401).json({error: 'User does not exits'})
     })
 })
+
+router.post(config.app.baseurl+'/logout', checkAuthen, (req, res) => {
+    res.clearCookie('token')
+    res.json({message: 'User logged out'})
+})
+
 
 router.put(config.app.baseurl +'/update', checkAuthen, (req, res) =>{
     const {username, password, role} = req.body
