@@ -5,7 +5,8 @@ const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken');
 const JWT_SECRET = config.JWT_SECRET
 const {checkAuthen} = require('../middlewares/middlewares')
-const {createUser, readUser, updateUser, deleteUser} = require('./db_module')
+const {createUser, readUser, updateUser, deleteUser, readAllUser} = require('./db_module');
+const middlewares = require('../middlewares/middlewares');
 
 
 router.post(config.app.baseurl +"/signup", checkAuthen, (req, res) => {
@@ -19,9 +20,9 @@ router.post(config.app.baseurl +"/signup", checkAuthen, (req, res) => {
         return res.status(422).json({error: 'Please add all the required fields'})
     }
 
-    createUser(username,password, role).then(message=> {
-        return res.json({message: message})
-    }).catch(err => {
+    createUser(username,password, role).then(savedUser=> {
+        return res.json({message: 'Created a new user', redirect: '/user/'+savedUser._id})
+    }).catch(err => {   
         console.log(err)
         return res.status(422).json({error: err})
     })
@@ -43,7 +44,7 @@ router.post(config.app.baseurl +'/login' ,(req, res) => {
                 const token = jwt.sign({_id : savedUser._id, username: savedUser.username}, JWT_SECRET)
                 console.log('User logged in => '+savedUser.username)
                 res.cookie('token', token);
-                res.json({message: 'Logged in '}) 
+                res.json({message: 'Logged in ', redirect: config.app.baseurl+'/user/'+savedUser.username}) 
             }else{
                 return res.status(401).json({error : 'Invalid username or password'})
             }
@@ -58,25 +59,22 @@ router.post(config.app.baseurl +'/login' ,(req, res) => {
 
 router.post(config.app.baseurl+'/logout', checkAuthen, (req, res) => {
     res.clearCookie('token')
-    res.json({message: 'User logged out'})
+    console.log('User logged out => '+res.locals.authUser.username)
+    res.json({message: 'User logged out', redirect: config.app.baseurl})
 })
 
 
 router.put(config.app.baseurl +'/update', checkAuthen, (req, res) =>{
-    const {username, password, role} = req.body
+    const user = req.body.user
     const {authUser} = res.locals
     if(authUser.role != 'admin'){
         return res.status(422).json({error: 'Update privillage denied'})
     }
-    if(!username ||  !password || !role){
-        return res.status(422).json({error : 'Provide username and password'})
+    if(!user || !user.username){
+        return res.status(422).json({error : 'Invalid format'})
     }
-    const newUser = {
-        username: username,
-        password: password,
-        role: role
-    }
-    updateUser(username, newUser).then((savedUser)=> {
+    
+    updateUser(user.username, user, false).then((savedUser)=> {
         res.json({message: 'Updated '+savedUser.username})
         return
     }).catch(err=> {
@@ -102,8 +100,23 @@ router.delete(config.app.baseurl +'/delete', checkAuthen, (req, res) => {
 })
 
 
+router.get(config.app.baseurl + '/users',checkAuthen ,(req, res) => {
+    const {authUser} = res.locals
+    if(authUser.role != 'admin'){
+        console.log('cannot send data')
+        return res.status(422).json({error: 'Update privillage denied'})
+    }
+    readAllUser({}).then(usersData => {
+        console.log('data is sent')
+        res.json({message: 'Recieved list of users', usersData:usersData});
+    })
+});
+
+
+
+
 createUser(config.admin.username, config.admin.password, 'admin').then(message => {
-    console.log('Created Admin user successfully')
+    console.log('Created'+ config.admin.username +'user successfully')
 }).catch(err => {
     // console.log(err)
 })

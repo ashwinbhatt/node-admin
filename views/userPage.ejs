@@ -3,6 +3,38 @@
         <title>User</title>
     </head>
     <body>
-        hy
+        <button onclick="logoutReq()">Logout</button>
+        <div>
+            <h2><%=userData.username%></h2>
+            <p> User type : <strong><%=userData.role %></strong> </p>
+            <p> Creation time : <strong> <%= userData.creation_stamp %> </strong>   </p>
+            <% if(signUrl){ %>
+                <form action= <%= signUrl %> >
+                    <button>Create new User</button>
+                </form>
+                <form action= <%= updateUser %> >
+                    <button>Update a user</button>
+                </form>
+            <% } %>
+        </div>
     </body>
+    <script>
+        var logout_url ='http://'+ document.location.host + '<%=url_base  %>' + '/logout';
+
+        var myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+        function logoutReq(){
+            fetch(logout_url, {
+                method: 'POST',
+                headers: myHeaders
+            }).then(response => {
+                return response.json();
+            }).then(result=> {
+                console.log(result.message);
+                document.location.href = 'http://'+document.location.host+result.redirect;
+            }).catch(err=> {
+                console.log(err);
+            });
+        }
+    </script>
 </html>

@@ -5,7 +5,8 @@ const user = new mongoose.Schema({
     username: {
         type: String,
         unique: true,
-        required: true
+        required: true,
+        immutable: true
     },
     password: {
         type: String, 
@@ -13,7 +14,8 @@ const user = new mongoose.Schema({
     },
     creation_stamp: {
         type: Date,
-        required: true
+        required: true,
+        immutable: true
     },
     role: {
         type: 'String',

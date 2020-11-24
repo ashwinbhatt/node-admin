@@ -3,6 +3,18 @@ const bcrypt = require('bcryptjs')
 const mongoose = require('mongoose')
 const User = mongoose.model('User')
 
+const saveUser = (newUser)=>{
+    return new Promise((resolve, reject )=> {
+        newUser.save().then((savedUser) => {
+            console.log("Saved => "+savedUser.username)
+            resolve(savedUser)
+            return
+        }).catch((err) => {
+            console.log(err)
+            return reject('Cannot Save '+saveUser.username)
+        })
+    }) 
+}
 
 const createUser = (username, password, role) => {
     return new Promise((resolve, reject) => {
@@ -24,14 +36,10 @@ const createUser = (username, password, role) => {
                                 creation_stamp: new Date(Date.now()),
                                 role: role
                             })
-                            user.save().then((savedUser) => {
-                                console.log("Created user => "+savedUser.username)
-                                // res.json({message: "Saved User successfully"})
-                                resolve('Created User succesfully')
-                                return
-                            }).catch((err) => {
-                                reject('Data does not fit User schema')
-                                return 
+                            saveUser(user).then(savedUser => {
+                                resolve(savedUser)
+                            }).catch(err => {
+                                throw err
                             })
                         });
             }).catch((err) => {
@@ -64,29 +72,38 @@ const readUser =  (userSearchData) => {
 
 
 
-const updateUser = (username, newUserData) => {
+const updateUser = (username, newUserData, allowAdmin) => {
     return new Promise((resolve, reject) => {
-        if(!username || !newUserData){
+        if(!username || !newUserData || allowAdmin==undefined){
             reject('Invalid arguments')
+            return
         }
+
         User.findOne({username: username}).then(savedUser => {
             if(!savedUser){
                 reject('User not found')
+                return
+            }
+            if(savedUser.role == 'admin' && allowAdmin==false){
+                console.log('cannot change admin')
+                reject('Admin cannot be changed')
+                return
+            }
+            
+            if(newUserData.role){
+                savedUser.role = newUserData.role
             }
 
-            bcrypt.hash(newUserData.password, config.password.saltRounds).then( hashedPass => {
-                savedUser.username = newUserData.username
-                savedUser.password = hashedPass
-                savedUser.role = newUserData.role
-                savedUser.save().then((savedUser) => {
-                    console.log("Updated user succesfully => "+savedUser.username)
-                    resolve(savedUser)
-                    return
-                }).catch((err) => {
-                    console.log(err)
-                    return reject('Cannot Update User')
-                })
-            })
+            saveUser(savedUser).then(saveUser=> {
+                resolve(saveUser)
+                return
+            }).catch(err=> {
+                reject(err)
+                return
+            })        
+
+        }).catch(err=> {
+            reject(err)
         })
     })
 }
@@ -120,10 +137,23 @@ const deleteUser = (username) => {
     })
 }
 
+const readAllUser= (pattern) => {
+    return new Promise ((resolve, reject)=> {
+        User.find(pattern).select('-password').then(usersData => {
+            if(!usersData ){
+                reject('Error in db response');
+            }
+            resolve(usersData);
+        })
+    }) 
+}
+
+
 
 module.exports ={
     createUser: createUser,
     readUser: readUser,
     updateUser: updateUser,
-    deleteUser: deleteUser
+    deleteUser: deleteUser,
+    readAllUser: readAllUser
 }
