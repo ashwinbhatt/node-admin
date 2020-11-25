@@ -5,7 +5,7 @@ const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken');
 const JWT_SECRET = config.JWT_SECRET
 const {checkAuthen} = require('../middlewares/middlewares')
-const {createUser, readUser, updateUser, deleteUser, readAllUser} = require('./db_module');
+const {createUser, readUser, updateUser, deleteUser, readAllUser, updateAUser} = require('./db_module');
 const middlewares = require('../middlewares/middlewares');
 
 
@@ -113,7 +113,25 @@ router.get(config.app.baseurl + '/users',checkAuthen ,(req, res) => {
 });
 
 
+router.put(config.app.baseurl+'/user/:username/update', checkAuthen, (req, res) => {
+    const {authUser} = res.locals
+    const {username} = req.params
+    const {password} = req.body.user
+    
+    if(!username || !password){
+        return res.status(422).json({error: 'Provide username and password'})
+    }
 
+    if(authUser.username != username){
+        return res.status(422).json({error: 'You must be logged in as '+username});
+    }
+
+    updateAUser(username, password).then(savedUser => {
+        res.json(savedUser);
+    }).catch(error => {
+        res.status(422).json({error: 'Cannot update the user'})
+    })
+})
 
 createUser(config.admin.username, config.admin.password, 'admin').then(message => {
     console.log('Created'+ config.admin.username +'user successfully')

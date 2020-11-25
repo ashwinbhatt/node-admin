@@ -41,26 +41,36 @@ router.get(config.app.baseurl + '/user/:username', checkAuthen,(req, res) => {
     if(req.params.username != authUser.username){
         res.redirect(config.app.baseurl+'/login')
     }else{
-        var signUrl=null, updateUser=null, deleteUser= null; 
+        var signUrl=null, updateUser=null, deleteUser= null, updateNoAdmin=req.originalUrl+'/update'; 
         if(authUser.role=='admin'){
             signUrl= config.app.baseurl+'/signup'
             updateUser=config.app.baseurl+'/update'
             deleteUser=config.app.baseurl+'/delete'
         }
-        res.render('userPage', {'url_base': config.app.baseurl, 'userData': authUser, 'signUrl': signUrl, 'updateUser': updateUser, 'deleteUser': deleteUser})
+        res.render('userPage', {'url_base': config.app.baseurl, 
+                                'userData': authUser, 
+                                'signUrl': signUrl, 
+                                'updateUser': updateUser, 
+                                'deleteUser': deleteUser,
+                                'updateNoAdmin': updateNoAdmin
+                            })
     }
 })
 
+router.get(config.app.baseurl+'/user/:username/update', checkAuthen,(req, res) => {
+    const {authUser} = res.locals
+    const {username} = req.params
+    
+    if(!username){
+        return res.status(422).json({error: 'Provide username and password'})
+    }
 
-        
+    if(authUser.username != username){
+        return res.status(422).json({error: 'You must be logged in as '+username});
+    }
 
-
-
-
-
-
-
-
+    res.render('userUpdate', {'success_redirect': config.app.baseurl+'/user'+username, 'url_base': config.app.baseurl})
+});
 
 
 

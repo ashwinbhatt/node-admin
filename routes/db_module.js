@@ -148,6 +148,32 @@ const readAllUser= (pattern) => {
     }) 
 }
 
+const updateAUser = (username, password) => {
+    return new Promise((resolve, reject) => {
+        if(!username || !password){
+            return reject('Invalid arguments')
+        }
+        User.findOne({username: username})
+            .then((savedUser) => {
+                if(!savedUser){
+                    return reject('User not found')
+                }
+                bcrypt.hash(password, config.password.saltRounds).then( hashedPass => {
+                    console.log(password)
+                    savedUser.password = hashedPass
+                    saveUser(savedUser).then(savedUser => {
+                        return resolve(savedUser)
+                    }).catch(err => {
+                        console.log(err.message)
+                        return reject('Cannot update '+username)
+                    })
+                });
+            }).catch((err) => {
+                console.log(err)
+                return reject('Could not create User')
+            })
+    })
+}
 
 
 module.exports ={
@@ -155,5 +181,6 @@ module.exports ={
     readUser: readUser,
     updateUser: updateUser,
     deleteUser: deleteUser,
-    readAllUser: readAllUser
+    readAllUser: readAllUser,
+    updateAUser: updateAUser
 }

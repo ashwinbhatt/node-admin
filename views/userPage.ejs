@@ -18,15 +18,20 @@
                 <form action= <%= deleteUser %> >
                     <button>Delete a user</button>
                 </form>
+                
             <% } %>
+            <a href= <%= updateNoAdmin %> >
+                <button >Update </button>
+            </a>
         </div>
     </body>
     <script>
-        var logout_url ='http://'+ document.location.host + '<%=url_base  %>' + '/logout';
-
-        var myHeaders = new Headers();
-        myHeaders.append("Content-Type", "application/json");
         function logoutReq(){
+
+            var logout_url ='http://'+ document.location.host + '<%=url_base  %>' + '/logout';
+            var myHeaders = new Headers();
+            myHeaders.append("Content-Type", "application/json");
+            
             fetch(logout_url, {
                 method: 'POST',
                 headers: myHeaders
