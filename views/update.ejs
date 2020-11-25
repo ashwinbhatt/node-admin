@@ -15,8 +15,8 @@
     <div style="width: 60%;margin: 0 auto;">
         <form>
             <div>
-                <select id="username">
-                    <option>Username</option>
+                <option>Username</option>
+                    <select id="username">
                 </select>
             </div>
             <div>
@@ -31,68 +31,68 @@
   
   <script>
        
-        var userEle = document.getElementById('username'),
-            roleEle = document.getElementById('role')
+    var userEle = document.getElementById('username'),
+        roleEle = document.getElementById('role')
 
-        var usersData=undefined;
-
-
-        function updateList(){
-            var select = document.getElementById('username');
-            usersData.forEach((userData, index) => {
-                var opt = userData.username;
-                var el = document.createElement("option");
-                el.setAttribute('id', 'username_'+index)
-                el.textContent = opt;
-                el.value = opt;
-                select.appendChild(el);
-            });
-        }
-
-        function autoFillForm(userdata){
-            var role = document.getElementById('role')
-            role.placeholder = userdata.role;
-            role.textContent=''
-        }
-        
-        function setTriggers(){
-            var activities = document.getElementById('username')
-            activities.addEventListener("change", function() {
-                if(activities.value == 'Username'){
-                    autoFillForm({role: 'Role'})
-                }else{
-                    usersData.forEach(userData => {
-                        if(userData.username == activities.value){
-                            autoFillForm(userData)
-                        }
-                    })
-                }
-            });
-        }
+    var usersData=undefined;
 
 
-        function getDataReq(){
+    function updateList(){
+        var select = document.getElementById('username');
+        usersData.forEach((userData, index) => {
+            var opt = userData.username;
+            var el = document.createElement("option");
+            el.setAttribute('id', 'username_'+index)
+            el.textContent = opt;
+            el.value = opt;
+            select.appendChild(el);
+        });
+    }
 
-            fetch('http://'+ document.location.host + '<%=url_base  %>' + '/users', {
-                method: 'GET',
-                headers: new Headers(),
-                redirect: 'follow'
-            }).then(response => {
-                if(!response.ok){
-                    throw response.json()
-                }
-                return response.json()
-            }).then(result => {
-                console.log(result.message)
-                usersData= result.usersData
-                updateList()
-                return
-            }).then(() => {
-                setTriggers()
-            }).catch(error => {
-                console.log(error)
-            });
-        }
+    function autoFillForm(userdata){
+        var role = document.getElementById('role')
+        role.placeholder = userdata.role;
+        role.textContent=''
+    }
+    
+    function setTriggers(){
+        var activities = document.getElementById('username')
+        activities.addEventListener("change", function() {
+            if(activities.value == 'Username'){
+                autoFillForm({role: 'Role'})
+            }else{
+                usersData.forEach(userData => {
+                    if(userData.username == activities.value){
+                        autoFillForm(userData)
+                    }
+                })
+            }
+        });
+    }
+
+
+    function getDataReq(){
+
+        fetch('http://'+ document.location.host + '<%=url_base  %>' + '/users', {
+            method: 'GET',
+            headers: new Headers(),
+            redirect: 'follow'
+        }).then(response => {
+            if(!response.ok){
+                throw response.json()
+            }
+            return response.json()
+        }).then(result => {
+            console.log(result.message)
+            usersData= result.usersData
+            updateList()
+            return
+        }).then(() => {
+            setTriggers()
+        }).catch(error => {
+            console.log(error)
+        });
+    }
 
         function updateReq(){
             
