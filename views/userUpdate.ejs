@@ -1,98 +1,47 @@
-<html>
-    <head>
-        <title>Update</title>
-    </head>
-    <body>
-        <button onclick="logoutReq()">Logout</button>
-        <div style="width: 60%;margin: 0 auto;">
+<%- include('partials/header') %>
 
-            <form name='form'>
-                <h3>Update password</h3>
-                <div>
-                    <label for='password'>Password</label>
-                    <input type="password" id='password' name="password" placeholder="New Password" \>
+<body>
+
+    <button onclick="logoutReq()" class="btn btn-outline-danger">Logout</button>
+    <h5>Logged in as <span class="badge badge-secondary"><%= logged_user%></span></h5>
+
+	<blockquote class="blockquote text-center">
+		<p class="mb-0 display-3">Update password</p>
+	</blockquote>
+    <div class="container">
+        <form name='form'>
+            <div id="alertDialogue" class="alert alert-danger" hidden></div>
+
+
+            <div class="row">
+                <label class="col-6 text-align-right" style="font-size: 1.5em;font-weight: bolder;" for='password'>
+                    Password
+				</label>
+                <div class="col-6">
+					<input type="password" id="password" name="password" placeholder="New Password"></input>
                 </div>
-                <div>
-                    <label for="rePassword">Re-Type Password</label>
-                    <input type="password" id='rePassword' name="rePassword" placeholder="Type Password again"\>
+            </div>
+
+            <div class="row">
+                <label class="col-6 text-align-right" style="font-size: 1.5em;font-weight: bolder;" for='rePassword'>
+                    Retype Password
+				</label>
+                <div class="col-6">
+					<input type="password" id="rePassword" name="rePassword" placeholder="Re-Type Password again"></input>
                 </div>
-                <div>
-                    <button id="formButton">Change Password</button>
+            </div>
+
+            <div>
+                <div class="row">
+                    <div class="col-5"></div>
+                    <div class="col-3 btn btn-outline-success text-align-right">
+                        <div style="font-size: 1.5em;font-weight: bolder;" onclick="updatePassReq()">Login</div>
+                    </div> 
                 </div>
-            </form>
+            </div>
+        </form>
 
-        </div>
-    </body>
-    <script>
-        var passEle = document.getElementById('password'),
-            rePassEle = document.getElementById('rePassword'), 
-            formButton = document.getElementById('formButton');
+    </div>
+</body>
 
-        function logoutReq(){
-
-            var logout_url ='http://'+ document.location.host + '<%=url_base  %>' + '/logout';
-            var myHeaders = new Headers();
-            myHeaders.append("Content-Type", "application/json");
-            
-            fetch(logout_url, {
-                method: 'POST',
-                headers: myHeaders
-            }).then(response => {
-                return response.json();
-            }).then(result=> {
-                console.log(result.message);
-                document.location.href = 'http://'+document.location.host+result.redirect;
-            }).catch(err=> {
-                console.log(err);
-            });
-        }
-
-        function updatePassReq(){
-            if(passEle.value != rePassEle.value){
-                console.log('Password Do not match')
-                return;
-            }
-
-
-            var myHeaders = new Headers();
-            myHeaders.append("Content-Type", "application/json");
-
-            var raw = JSON.stringify({user: {"password": passEle.value}});
-
-            var requestOptions = {
-            method: 'PUT',
-            headers: myHeaders,
-            body: raw,
-            redirect: 'follow'
-            };
-
-            fetch(document.location.href, requestOptions).then(response => {
-                console.log(response)
-                if(!response.ok){
-                    throw response.json()
-                }
-                return response.json();
-            }).then(result=> {
-                console.log('Valid')
-                console.log(result.message)
-                return
-            }).catch(error=> {
-                console.log('Invalid')
-                error.then(res=> {
-                    console.log(res.error)
-                }).catch(err=> {
-                    console.log(err)
-                })
-            })
-        }
-
-
-        formButton.addEventListener('click', function(event){
-            event.preventDefault();
-            updatePassReq();
-            return false
-        });
-
-
-    </script>
-</html>
+<%- include('partials/footer') %>

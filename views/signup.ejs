@@ -1,67 +1,61 @@
-<html>
-  <head><title> App SignUp</title></head>
-  <body>
-    <div style="width: 60%;margin: 0 auto;">
-    <form name="form">
-      <h3>Signup</h3>
-      <label for="username">Username</label>
-      <input type="text" id='username' name="username" placeholder="Enter username"></form>
-      <label for="password">password</label>
-      <input type="password" id="password" name="password" placeholder="Enter password"></input>
-      <p></p>
-      <label for="role">Role</label>
-      <input type="text" id="role" name="role" placeholder="Enter role"></input>
-      <p><submit onclick="signupReq()">Sign Up</submit></p>
-    </form>
-  </body> 
-  
-  <script>
-    var myHeaders = new Headers();
-    myHeaders.append("Authorization", "token eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZmIwZTNkZDEyNWRkMDI5NWNlMzljODgiLCJ1c2VybmFtZSI6ImFkbWluIiwiaWF0IjoxNjA1NjIwNjU0fQ.tzDkCrDEiqSoqlGYYAIfe79WXPqGlPyZSNViDbcyA4Y");
-    myHeaders.append("Content-Type", "application/json");
-    var userEle = document.getElementById('username'),
-        passEle = document.getElementById('password'),
-        roleEle = document.getElementById('role')
-        
-    
-    const checkCookie = (cookieName) => {
-      return new Promise((resolve, reject) => {
-          document.cookie.split(';').forEach(cookie => {
-              const cookie_split = cookie.split('=');
-              if(cookie_split[0] == cookieName){
-                  resolve(cookie_split[1])
-              }
-          })
-        })
-    };
+<%- include('partials/header') %>
 
+<body>
 
-    function signupReq(){
-        fetch(window.location.href, {
-            method: 'POST',
-            headers: myHeaders,
-            body: JSON.stringify({
-                "username": userEle.value,
-                "password":passEle.value,
-                "role":roleEle.value
-            }),
-            redirect: 'follow'
-        }).then(response =>{
-          if(!response.ok){
-            throw response.json()
-          }
-          return response.json()
-        }).then(result =>{
-          console.log('Valid')
-          console.log(result.message)
-        }).catch(error => {
-          console.log('invalid')
-          error.then(res=> {
-            console.log(res.error)
-          }).catch(err=> {
-            console.log(err)
-          });
-        });
-    }
-  </script>
-</html>
+	<button onclick="logoutReq()" class="btn btn-outline-danger">Logout</button>
+    <h5>Logged in as <span class="badge badge-secondary"><%= logged_user%></span></h5>
+	
+	<blockquote class="blockquote text-center">
+		<p class="mb-0 display-3">Create new user</p>
+	</blockquote>
+	<div class="container">
+		<form name="form">
+			<div id="alertDialogue" class="alert alert-danger" hidden></div>
+			<div class="row">
+				<label class="col-6 text-align-right" style="font-size: 1.5em;font-weight: bolder;" for='username'>
+					Username
+				</label>
+				<div class="col-6">
+					<input type="text" id='username' name="username" placeholder="Enter username"></input>
+				</div>
+			</div>
+
+			<div class="row">
+				<label class="col-6 text-align-right" style="font-size: 1.5em;font-weight: bolder;" for='password'>
+					Password
+				</label>
+				<div class="col-6">
+					<input type="password" id="password" name="password" placeholder="Enter password"></input>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-6 text-align-right" style="font-size: 1.5em;font-weight: bolder;">
+					Role
+				</div>
+				<div class="col-6">
+					<label for="roleAdmin">Admin</label>
+					<input type="radio" name="role" id="r1" value="admin">
+					<br>
+					<label for="roleSubAdmin">SubAdmin</label>
+					<input type="radio" name="role" id="r2" value="subadmin">
+					<br>
+					<label for="roleTourist">Tourist</label>
+					<input type="radio" name="role" id="r3" value="tourist">
+				</div>
+			</div>
+
+			<div>
+				<div class="row">
+					<div class="col-5"></div>
+					<div class="col-3 btn btn-outline-success text-align-right">
+						<div style="font-size: 1.5em;font-weight: bolder;" onclick="signupReq()">Create new user</div>
+					</div>
+				</div>
+			</div>
+
+		</form>
+	</div>
+</body>
+
+<%- include('partials/footer') %>

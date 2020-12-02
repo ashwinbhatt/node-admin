@@ -10,8 +10,8 @@ const saveUser = (newUser)=>{
             resolve(savedUser)
             return
         }).catch((err) => {
-            console.log(err)
-            return reject('Cannot Save '+saveUser.username)
+            console.log(err.message)
+            return reject(err.message)
         })
     }) 
 }
@@ -39,7 +39,7 @@ const createUser = (username, password, role) => {
                             saveUser(user).then(savedUser => {
                                 resolve(savedUser)
                             }).catch(err => {
-                                throw err
+                                reject(err)
                             })
                         });
             }).catch((err) => {

@@ -1,50 +1,41 @@
-<html>
-  <head><title> App login</title></head>
-  <body>
-    <div style="width: 60%;margin: 0 auto;">
-    <form name="form">
-      <h3>Login</h3>
-      <label for="username">Username</label>
-      <input type="text" id='username' name="username" placeholder="Enter username"></form>
-      <label for="password">password</label>
-      <input type="text" id="password" name="password" placeholder="Enter password"></input>
-      <p><button onclick="loginReq()">Login</button></p>
-    </form>
+<%- include('partials/header') %>
 
-    
-  </body> 
-  
-  <script>
-    var myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-    var userEle = document.getElementById('username'), passEle = document.getElementById('password');
-    function loginReq(){
+<body>
 
-          fetch(window.location.href, {
-            method: 'POST',
-            headers: myHeaders,
-            body: JSON.stringify({
-                        "username":userEle.value,
-                        "password":passEle.value
-                      }),
-            redirect: 'follow'
-          }).then(response => {
-            if(!response.ok){
-              throw response.json()
-            }
-            return response.json()
-          }).then(result => {
-            console.log(result.message)
-            document.location.href = 'http://'+ document.location.host +result.redirect
-            // document.cookie= "token="+result.token
-          }).catch(error => {
-            error.then(res => {
-              console.log(res.error)
-            }).catch(err => {
-              console.log(err)
-            })
-          });
-    }
+	<blockquote class="blockquote text-center">
+        <p class="mb-0 display-3">Login</p>
+    </blockquote>
+	<div class="container">
+		<form name="form">
 
-  </script>
-</html>
+			<div id="alertDialogue" class="alert alert-danger" hidden></div>
+
+			<div class="row">
+                <label class="col-6 text-align-right" style="font-size: 1.5em;font-weight: bolder;" for='username'>
+                    Username
+				</label>
+                <div class="col-6">
+                    <input type="text" id='username' name="username" placeholder="Enter username"></input>
+                </div>
+            </div>
+
+			<div class="row">
+                <label class="col-6 text-align-right" style="font-size: 1.5em;font-weight: bolder;" for='password'>
+                    Password
+				</label>
+                <div class="col-6">
+					<input type="password" id="password" name="password" placeholder="Enter password"></input>
+                </div>
+            </div>
+			<div>
+                <div class="row">
+                    <div class="col-5"></div>
+                    <div class="col-3 btn btn-outline-success text-align-right">
+                        <div style="font-size: 1.5em;font-weight: bolder;" onclick="loginReq()">Login</div>
+                    </div> 
+                </div>
+            </div>
+		</form>
+	</div>
+</body>
+<%- include('partials/footer') %>

@@ -53,7 +53,7 @@ router.post(config.app.baseurl +'/login' ,(req, res) => {
             return res.status(401).json({error : 'Invalid username or password'})            
         })
     }).catch((err)=> {
-        res.status(401).json({error: 'User does not exits'})
+        res.status(401).json({error: 'Invalid username or password'})
     })
 })
 
@@ -127,7 +127,7 @@ router.put(config.app.baseurl+'/user/:username/update', checkAuthen, (req, res) 
     }
 
     updateAUser(username, password).then(savedUser => {
-        res.json(savedUser);
+        res.json({message: 'Password changed successfully'});
     }).catch(error => {
         res.status(422).json({error: 'Cannot update the user'})
     })

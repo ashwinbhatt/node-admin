@@ -15,10 +15,11 @@ router.get(config.app.baseurl + '/login', (req, res) => {
 });
 
 router.get(config.app.baseurl + '/signup', checkAuthen,(req, res) => {
+    const {authUser} = res.locals
     if(res.locals.authUser.role != 'admin'){
         return res.status(401).json({error: 'You are not authorised to add a user !'})
     }
-    res.render('signup.ejs', {'url_base': config.app.baseurl})  
+    res.render('signup.ejs', {'url_base': config.app.baseurl, 'logged_user': authUser.username})  
 });
 
 router.get(config.app.baseurl + '/update', checkAuthen,(req, res) => {
@@ -26,14 +27,15 @@ router.get(config.app.baseurl + '/update', checkAuthen,(req, res) => {
     if(authUser.role != 'admin' ){
         return res.status(422).json({error: 'Update privillage denied'})
     }
-    res.render('update.ejs', {'url_base': config.app.baseurl})
+    res.render('update.ejs', {'url_base': config.app.baseurl, 'logged_user': authUser.username})
 })
 
 router.get(config.app.baseurl + '/delete', checkAuthen,(req, res) => {
+    const {authUser} = res.locals
     if(res.locals.authUser.role != 'admin'){
         return res.status(401).json({error: 'You are not authorised to delete a user !'})
     }
-    res.render('delete.ejs', {'url_base': config.app.baseurl})
+    res.render('delete.ejs', {'url_base': config.app.baseurl, 'logged_user': authUser.username})
 })
 
 router.get(config.app.baseurl + '/user/:username', checkAuthen,(req, res) => {
@@ -52,7 +54,8 @@ router.get(config.app.baseurl + '/user/:username', checkAuthen,(req, res) => {
                                 'signUrl': signUrl, 
                                 'updateUser': updateUser, 
                                 'deleteUser': deleteUser,
-                                'updateNoAdmin': updateNoAdmin
+                                'updateNoAdmin': updateNoAdmin, 
+                                'logged_user': authUser.username
                             })
     }
 })
@@ -69,9 +72,10 @@ router.get(config.app.baseurl+'/user/:username/update', checkAuthen,(req, res) =
         return res.status(422).json({error: 'You must be logged in as '+username});
     }
 
-    res.render('userUpdate', {'success_redirect': config.app.baseurl+'/user'+username, 'url_base': config.app.baseurl})
+    res.render('userUpdate', {  'success_redirect': config.app.baseurl+'/user'+username, 
+                                'url_base': config.app.baseurl, 
+                                'logged_user': authUser.username
+                            })
 });
-
-
 
 module.exports = router

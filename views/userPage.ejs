@@ -1,48 +1,64 @@
-<html>
-    <head>
-        <title>User</title>
-    </head>
-    <body>
-        <button onclick="logoutReq()">Logout</button>
-        <div>
-            <h2><%=userData.username%></h2>
-            <p> User type : <strong><%=userData.role %></strong> </p>
-            <p> Creation time : <strong> <%= userData.creation_stamp %> </strong>   </p>
-            <% if(signUrl){ %>
-                <form action= <%= signUrl %> >
-                    <button>Create new User</button>
-                </form>
-                <form action= <%= updateUser %> >
-                    <button>Update a user</button>
-                </form>
-                <form action= <%= deleteUser %> >
-                    <button>Delete a user</button>
-                </form>
-                
-            <% } %>
-            <a href= <%= updateNoAdmin %> >
-                <button >Update </button>
-            </a>
-        </div>
-    </body>
-    <script>
-        function logoutReq(){
+<%- include('partials/header') %>
 
-            var logout_url ='http://'+ document.location.host + '<%=url_base  %>' + '/logout';
-            var myHeaders = new Headers();
-            myHeaders.append("Content-Type", "application/json");
-            
-            fetch(logout_url, {
-                method: 'POST',
-                headers: myHeaders
-            }).then(response => {
-                return response.json();
-            }).then(result=> {
-                console.log(result.message);
-                document.location.href = 'http://'+document.location.host+result.redirect;
-            }).catch(err=> {
-                console.log(err);
-            });
-        }
-    </script>
-</html>
+<body>
+    <button onclick="logoutReq()" class="btn btn-outline-danger">Logout</button>
+    <h5>Logged in as <span class="badge badge-secondary"><%= logged_user%></span></h5>
+    <blockquote class="blockquote text-center">
+        <p class="mb-0 display-3"><%= userData.username%></p>
+    </blockquote>
+    <div class="container">
+        <div class="row">
+            <label class="col-6 text-align-right" style="font-size: 1.5em;font-weight: bolder;">
+                User-type
+            </label>
+            <div class="col-6">
+                <div><%=userData.role %></div>
+            </div>
+        </div>
+
+        <div class="row">
+            <label class="col-6 text-align-right" style="font-size: 1.5em;font-weight: bolder;">
+                Creation time
+            </label>
+            <div class="col-6">
+                <div><%=userData.creation_stamp %></div>
+            </div>
+        </div>
+        <% if(signUrl){ %>
+            <div class="row">
+                <div class="col-4"></div>
+                <div class="col-3 text-align-right">
+                    <a href=<%= signUrl %>>
+                        <button class="btn btn-outline-dark">Create new User </button>
+                    </a>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-4"></div>
+                <div class="col-3 text-align-right">
+                    <a href=<%= updateUser %>>
+                        <button class="btn btn-outline-dark">Update a user </button>
+                    </a>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-4"></div>
+                <div class="col-3 text-align-right">
+                    <a href=<%= deleteUser %>>
+                        <button class="btn btn-outline-dark">Delete a user </button>
+                    </a>
+                </div>
+            </div>
+        <%}%>
+            <div class="row">
+                <div class="col-4"></div>
+                <div class="col-3 text-align-right">
+                    <a href=<%= updateNoAdmin %>>
+                        <button class="btn btn-outline-dark">Change password </button>
+                    </a>
+                </div>
+            </div>
+    </div>
+</body>
+
+<%- include('partials/footer') %>
