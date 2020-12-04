@@ -10,8 +10,9 @@ class Logger {
   constructor(name, options = {}) {
     this.name = name;
     this.winston_drf_params = {
-      filename: 'application-%DATE%.log',
+      filename: `${this.name}-%DATE%.log`,
       datePattern: 'YYYY-MM-DD-HH',
+      json: true,
       zippedArchive: false,
       maxSize: '5m',
       maxFiles: '366d',

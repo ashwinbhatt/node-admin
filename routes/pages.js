@@ -43,11 +43,12 @@ router.get(config.app.baseurl + '/user/:username', checkAuthen,(req, res) => {
     if(req.params.username != authUser.username){
         res.redirect(config.app.baseurl+'/login')
     }else{
-        var signUrl=null, updateUser=null, deleteUser= null, updateNoAdmin=req.originalUrl+'/update'; 
+        var signUrl=null, updateUser=null, deleteUser= null, updateNoAdmin=req.originalUrl+'/update', logsUrl= null; 
         if(authUser.role=='admin'){
             signUrl= config.app.baseurl+'/signup'
             updateUser=config.app.baseurl+'/update'
             deleteUser=config.app.baseurl+'/delete'
+            logsUrl= config.app.baseurl+'/logs'
         }
         res.render('userPage', {'url_base': config.app.baseurl, 
                                 'userData': authUser, 
@@ -55,7 +56,8 @@ router.get(config.app.baseurl + '/user/:username', checkAuthen,(req, res) => {
                                 'updateUser': updateUser, 
                                 'deleteUser': deleteUser,
                                 'updateNoAdmin': updateNoAdmin, 
-                                'logged_user': authUser.username
+                                'logged_user': authUser.username,
+                                'logsUrl': logsUrl
                             })
     }
 })
@@ -77,5 +79,34 @@ router.get(config.app.baseurl+'/user/:username/update', checkAuthen,(req, res) =
                                 'logged_user': authUser.username
                             })
 });
+
+
+router.get(config.app.baseurl + '/jsonlogs' , checkAuthen,(req, res) => {
+    const {authUser} = res.locals
+    if(authUser.role != 'admin' ){
+        return res.status(422).json({error: 'Update privillage denied'})
+    }
+
+      logger.logger.query({}, function (err, results) {
+        if (err) {
+          logger.error(`Cannot get logs ${err}`)
+          return res.status(404).json({error: 'Error in getting logs'})
+        }
+      
+        res.json({message: 'Logs successfully recieved.' ,logs: results.dailyRotateFile})
+      });
+})
+
+
+router.get(config.app.baseurl+'/logs', checkAuthen, (req, res) => {
+    const {authUser} = res.locals
+
+    if(authUser.role != 'admin' ){
+        return res.status(422).json({error: 'Update privillage denied'})
+    }
+
+    res.render('logs.ejs', {'url_base': config.app.baseurl})
+})
+
 
 module.exports = router

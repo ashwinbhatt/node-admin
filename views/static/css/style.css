@@ -22,3 +22,26 @@ body {
 .text-align-right{
     text-align: right;
 }
+
+.tableOddCol{
+	background-color: lightcoral;
+	text-align: center;
+	width: 20%;
+}
+
+.tableEvenCol{
+	background-color: rgb(165, 208, 243);
+	text-align: center;
+	width: 20%;
+}
+
+.tableHead{
+	background-color: green;
+	text-align: center;
+	width: 20%;
+}
+
+#showData{
+	width: 80%;
+	margin: 0 auto;
+}

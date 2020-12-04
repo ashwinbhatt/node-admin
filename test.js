@@ -1,4 +1,4 @@
-const config = process.webConf;
+const {config, logger} = process.admin
 const express = require('express')
 const mongoose = require('mongoose')
 const router = express.Router()
@@ -6,7 +6,7 @@ const router = express.Router()
 const {checkAuthen} = require('./middlewares/middlewares')
 
 
-router.get('/secure', checkAuthen, (req, res)=> {
+router.get(config.app.baseurl+'/secure', checkAuthen, (req, res)=> {
     var time = new Date(Date.now())
     // console.log(res.locals.authUser)
     const {authUser} = res.locals 

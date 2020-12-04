@@ -5,7 +5,7 @@ function alertDisplay(message, time = 3000) {
 	var ele = document.getElementById('alertDialogue');
 	ele.innerHTML = message
 	ele.hidden = false
-	ele.style.textAlign= 'center'
+	ele.style.textAlign = 'center'
 	setTimeout((element) => {
 		element.innerHTML = '';
 		ele.hidden = true
@@ -161,14 +161,14 @@ function signupReq() {
 		password = document.getElementById('password').value,
 		role = getRole();
 
-	
-	if(!username || username.length==0|| !password || password.length==0 || !role || role.length==0){
+
+	if (!username || username.length == 0 || !password || password.length == 0 || !role || role.length == 0) {
 		console.log('Fill all the fields')
 		alertDisplay('Fill all the fields')
 		return
 	}
 
-	
+
 	fetch(window.location.href, {
 		method: 'POST',
 		headers: myHeaders,
@@ -359,3 +359,94 @@ function updatePassReq() {
 }
 
 //================================================================================================
+//============================================for logs.ejs========================================
+
+//  Function modified from
+//   https://www.codegrepper.com/code-examples/javascript/display+json+data+in+html+table+using+javascript+dynamically
+
+let myBooks;
+let logTypes=[];
+
+function displayTableFromJson() {
+
+	var divContainer = document.getElementById("showData");
+	while (divContainer.firstChild) {
+		divContainer.removeChild(divContainer.firstChild);
+    }
+	// EXTRACT VALUE FOR HTML HEADER. 
+	// ('Book ID', 'Book Name', 'Category' and 'Price')
+	var col = [];
+	for (var i = 0; i < myBooks.length; i++) {
+		for (var key in myBooks[i]) {
+			if (col.indexOf(key) === -1) {
+				col.push(key);
+			}
+		}
+	}
+	
+
+	// CREATE DYNAMIC TABLE.
+	var table = document.createElement("table");
+
+	// CREATE HTML TABLE HEADER ROW USING THE EXTRACTED HEADERS ABOVE.
+
+	var tr = table.insertRow(-1);                   // TABLE ROW.
+
+	for (var i = 0; i < col.length; i++) {
+		var th = document.createElement("th");      // TABLE HEADER.
+		th.innerHTML = col[i];
+		th.classList.add('tableHead')
+		tr.appendChild(th);
+	}
+
+	// ADD JSON DATA TO THE TABLE AS ROWS.
+	for (var i = 0; i <myBooks.length ; i++) {
+
+		tr = table.insertRow(-1);
+
+		for (var j = 0; j < col.length; j++) {
+			var tabCell = tr.insertCell(-1);
+			tabCell.innerHTML = myBooks[i][col[j]];
+			if(j%2==0){
+				tabCell.classList.add('tableEvenCol')
+			}else{
+				tabCell.classList.add('tableOddCol')
+			}
+		}
+	}
+
+	// FINALLY ADD THE NEWLY CREATED TABLE WITH JSON DATA TO A CONTAINER.
+	var divContainer = document.getElementById("showData");
+	divContainer.innerHTML = "";
+	divContainer.appendChild(table);
+}
+
+
+function displayLogs() {
+	var myHeaders = new Headers();
+	myHeaders.append("Content-Type", "application/json");
+
+	fetch('http://' + document.location.host + url_base + '/jsonlogs', {
+		method: 'GET',
+		headers: myHeaders,
+		redirect: 'follow'
+	}).then(response => {
+		return response.json();
+	}).then(result => {
+		alertDisplay(result.message, 100000)
+		console.log(result.message);
+		myBooks= result.logs;
+		displayTableFromJson();
+	}).catch(error => {
+		console.log(error)
+		Promise.resolve(error).then(res => {
+			if (!res.error) {
+				alertDisplay('Something went wrong')
+				console.log('Something went wrong')
+			} else {
+				alertDisplay(res.error)
+				console.log(res.error)
+			}
+		})
+	});
+}
