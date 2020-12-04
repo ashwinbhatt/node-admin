@@ -1,4 +1,4 @@
-const config = process.webConf;
+const {config, logger} = process.admin
 const jwt = require('jsonwebtoken')
 const {readUser} = require('../routes/db_module')
 const JWT_SECRET = config.JWT_SECRET
@@ -11,7 +11,7 @@ function checkAuthen(req, res, next) {
     
     jwt.verify(token, JWT_SECRET, (err, payload) => {
         if(err){
-            console.log(err)
+            logger.error(`Error in middleware : ${err}`)
             return res.status(401).json({error: 'You are not authorised'})
         }
         const {_id} = payload
@@ -20,7 +20,7 @@ function checkAuthen(req, res, next) {
             res.locals.authUser= savedUser
             next()
         }).catch(err=> {
-            console.log(err)
+            logger.error(`Error in middleware : ${err}`)
             return res.status(401).json({error: 'You are authorised'})
         })
     })

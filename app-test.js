@@ -6,18 +6,29 @@ const CONFIG_PATH = '../../configs/node-admin-config.json'
 const config = require(CONFIG_PATH)
 const port = 5000;
 var cookieParser = require('cookie-parser');
-// Making config accessable to all files
-process.webConf= config
 
+
+// Adding Logger 
+const { Logger } = require('./logger/Logger')
+const logger = new Logger('node-admin', {
+    logLevel: 'verbose',
+    path: config.Logger.path
+})
+
+
+// Making config, logger accessable to all files
+process.admin = { config, logger }
 
 // Setting up the database
-mongoose.connect(config['database']['URI'] ,{useNewUrlParser: true, useUnifiedTopology: true,
-    useCreateIndex: true,});
-mongoose.connection.on('connected', ()=> {
-    console.log("MongoDB connected");
+mongoose.connect(config['database']['URI'], {
+    useNewUrlParser: true, useUnifiedTopology: true,
+    useCreateIndex: true,
+});
+mongoose.connection.on('connected', () => {
+    logger.info("MongoDB connected");
 })
-mongoose.connection.on('error', (err)=>{
-    console.log("MongoDB failed to connect", err)
+mongoose.connection.on('error', (err) => {
+    logger.info('MongoDB failed to connect :' + err)
 })
 
 // Loading up the database schemas
@@ -34,5 +45,5 @@ app.use(require('./test'))
 app.use(require('./routes/pages'))
 
 app.listen(port, () => {
-    console.log(`Server running on port ${port} 🔥`)
+    logger.info(`Server running on port ${port} 🔥`)
 });

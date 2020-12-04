@@ -1,4 +1,4 @@
-const config = process.webConf
+const {config, logger} = process.admin
 const express = require('express')
 const router = express.Router()
 const { readUser, deleteUser } = require('./db_module')
