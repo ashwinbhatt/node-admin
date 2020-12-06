@@ -11,7 +11,7 @@ router.get(config.app.baseurl, (req, res) => {
 
 
 router.get(config.app.baseurl + '/login', (req, res) => {
-    res.render('login.ejs', {'url_base': config.app.baseurl})
+    res.render('../views/login.ejs', {'url_base': config.app.baseurl})
 });
 
 router.get(config.app.baseurl + '/signup', checkAuthen,(req, res) => {
@@ -19,7 +19,7 @@ router.get(config.app.baseurl + '/signup', checkAuthen,(req, res) => {
     if(res.locals.authUser.role != 'admin'){
         return res.status(401).json({error: 'You are not authorised to add a user !'})
     }
-    res.render('signup.ejs', {'url_base': config.app.baseurl, 'logged_user': authUser.username})  
+    res.render('../views/signup.ejs', {'url_base': config.app.baseurl, 'logged_user': authUser.username})  
 });
 
 router.get(config.app.baseurl + '/update', checkAuthen,(req, res) => {
@@ -27,7 +27,7 @@ router.get(config.app.baseurl + '/update', checkAuthen,(req, res) => {
     if(authUser.role != 'admin' ){
         return res.status(422).json({error: 'Update privillage denied'})
     }
-    res.render('update.ejs', {'url_base': config.app.baseurl, 'logged_user': authUser.username})
+    res.render('../views/update.ejs', {'url_base': config.app.baseurl, 'logged_user': authUser.username})
 })
 
 router.get(config.app.baseurl + '/delete', checkAuthen,(req, res) => {
@@ -35,7 +35,7 @@ router.get(config.app.baseurl + '/delete', checkAuthen,(req, res) => {
     if(res.locals.authUser.role != 'admin'){
         return res.status(401).json({error: 'You are not authorised to delete a user !'})
     }
-    res.render('delete.ejs', {'url_base': config.app.baseurl, 'logged_user': authUser.username})
+    res.render('../views/delete.ejs', {'url_base': config.app.baseurl, 'logged_user': authUser.username})
 })
 
 router.get(config.app.baseurl + '/user/:username', checkAuthen,(req, res) => {
@@ -50,7 +50,7 @@ router.get(config.app.baseurl + '/user/:username', checkAuthen,(req, res) => {
             deleteUser=config.app.baseurl+'/delete'
             logsUrl= config.app.baseurl+'/logs'
         }
-        res.render('userPage', {'url_base': config.app.baseurl, 
+        res.render('../views/userPage', {'url_base': config.app.baseurl, 
                                 'userData': authUser, 
                                 'signUrl': signUrl, 
                                 'updateUser': updateUser, 
@@ -74,7 +74,7 @@ router.get(config.app.baseurl+'/user/:username/update', checkAuthen,(req, res) =
         return res.status(422).json({error: 'You must be logged in as '+username});
     }
 
-    res.render('userUpdate', {  'success_redirect': config.app.baseurl+'/user'+username, 
+    res.render('../views/userUpdate', {  'success_redirect': config.app.baseurl+'/user'+username, 
                                 'url_base': config.app.baseurl, 
                                 'logged_user': authUser.username
                             })
@@ -105,7 +105,7 @@ router.get(config.app.baseurl+'/logs', checkAuthen, (req, res) => {
         return res.status(422).json({error: 'Update privillage denied'})
     }
 
-    res.render('logs.ejs', {'url_base': config.app.baseurl})
+    res.render('../views/logs.ejs', {'url_base': config.app.baseurl})
 })
 
 

@@ -41,7 +41,6 @@ app.use(express.json())
 app.use(cookieParser());
 app.use(express.static('./views/static'));
 app.use(require('./routes/user'))
-app.use(require('./test'))
 app.use(require('./routes/pages'))
 
 app.listen(port, () => {
