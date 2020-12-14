@@ -3,8 +3,9 @@
 
 <body onload="getDataReq()">
 
-    <button onclick="logoutReq()" class="btn btn-outline-danger">Logout</button>
-    <h5>Logged in as <span class="badge badge-secondary"><%= logged_user%></span></h5>
+    <button onclick="logoutReq()" class="btn btn-danger">Logout</button>
+    <button onclick="redirectCus('<%= loggedUserPage%>')" class="btn btn-primary"><%= logged_user%></button>
+    
 
     <blockquote class="blockquote text-center">
         <p class="mb-0 display-3">Delete User</p>

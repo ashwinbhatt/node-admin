@@ -2,6 +2,8 @@
 
 <body onload="displayLogs()">
     <div id="alertDialogue" class="alert alert-danger" hidden></div>
+    <button onclick="logoutReq()" class="btn btn-danger">Logout</button>
+    <button onclick="redirectCus('<%= loggedUserPage%>')" class="btn btn-primary"><%= logged_user%></button>
     <div id="logpanel"></div>
     <div id="showData"></div>
 </body>

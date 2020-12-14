@@ -1,18 +1,18 @@
-const {config, logger} = global.APP_VARIABLES
+const {config, logge, baseUrl} = global.APP_VARIABLES
 const jwt = require('jsonwebtoken')
 const {readUser} = require('../routes/db_module')
 const JWT_SECRET = config.JWT_SECRET
 
 function checkAuthen(req, res, next) {
     if(!req.cookies || !req.cookies.token){
-        return res.status(401).json({error : 'You are not authorised'})
+        return res.redirect(baseUrl)
     }
     const {token} = req.cookies
     
     jwt.verify(token, JWT_SECRET, (err, payload) => {
         if(err){
             logger.error(`Error in middleware : ${err}`)
-            return res.status(401).json({error: 'You are not authorised'})
+            return res.redirect(baseUrl)
         }
         const {_id} = payload
         readUser({_id: _id}).then(savedUser=> {
@@ -21,7 +21,7 @@ function checkAuthen(req, res, next) {
             next()
         }).catch(err=> {
             logger.error(`Error in middleware : ${err}`)
-            return res.status(401).json({error: 'You are authorised'})
+            return res.redirect(baseUrl)
         })
     })
 }

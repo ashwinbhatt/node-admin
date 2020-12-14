@@ -1,5 +1,5 @@
 body {
-	background: linear-gradient(-45deg, #ee7752, #efe8eb, #23a6d5, #23d5ab);;
+	background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
 	background-size: 400% 400%;
 	animation: gradient 15s ease infinite;
 }
@@ -15,6 +15,8 @@ body {
 		background-position: 0% 50%;
 	}
 }
+
+
 .row{
     margin-top: 4% !important;
 }
@@ -44,4 +46,8 @@ body {
 #showData{
 	width: 80%;
 	margin: 0 auto;
+}
+
+.logTag{
+	color: white !;
 }

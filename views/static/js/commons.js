@@ -12,6 +12,10 @@ function alertDisplay(message, time = 3000) {
 	}, time, ele);
 }
 
+function redirectCus(routeLocaltion){
+	document.location.href = 'http://' + document.location.host +url_base+routeLocaltion
+}
+
 
 
 // =====================================LOGIN PAGE===================================================
