@@ -39,7 +39,6 @@ const checkAuthenAPI = (req, res, next) => {
         }
         const {_id} = payload
         readUser({_id: _id}).then(savedUser=> {
-            savedUser.password = undefined
             res.locals.authUser= savedUser
             next()
         }).catch(err=> {
