@@ -3,7 +3,7 @@ const express = require('express')
 const router = express.Router()
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken');
-const JWT_SECRET = config.JWT_SECRET
+const {JWT_SECRET, token_valid} = config.token
 const {checkAuthen} = require('../middlewares/middlewares')
 const {createUser, readUser, updateUser, deleteUser, readAllUser, updateAUser} = require('./db_module');
 const middlewares = require('../middlewares/middlewares');
@@ -76,7 +76,7 @@ router.post('/login' ,(req, res) => {
         
         bcrypt.compare(password, savedUser.password).then((doMatch) => {
             if(doMatch){
-                const token = jwt.sign({_id : savedUser._id, username: savedUser.username}, JWT_SECRET)
+                const token = jwt.sign({_id : savedUser._id, username: savedUser.username}, JWT_SECRET, { expiresIn: token_valid })
                 logger.verbose(`User Logged in : ${savedUser.username}`)
                 res.cookie('token', token);
                 res.json({message: 'Logged in ', redirect: baseUrl+'/user/'+savedUser.username}) 

@@ -9,13 +9,14 @@ const { splat, combine, timestamp, printf } = winston.format;
 class Logger {
   constructor(name, options = {}) {
     this.name = name;
+    this.maxFiles = this.maxFiles
     this.winston_drf_params = {
       filename: `${this.name}-%DATE%.log`,
-      datePattern: 'YYYY-MM-DD-HH',
+      datePattern: 'YYYY-MM-DD',
       json: true,
       zippedArchive: false,
-      maxSize: '5m',
-      maxFiles: '1d',
+      maxSize: '10m',
+      maxFiles: this.maxFiles,
       dirname: options.path,
       format: winston.format.combine(
         winston.format.timestamp(),

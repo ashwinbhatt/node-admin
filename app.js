@@ -18,9 +18,10 @@ module.exports = (config, baseUrl) => {
 	const logPath = config.Logger.path
 
 
-	const logger = new Logger('node-admin', {
+	const logger = new Logger(config.app.appName, {
 		logLevel: 'verbose',
 		path: logPath,
+		maxFiles: config.Logger.maxFiles
 	})
 
 	// Making config, logger accessable to whole application
@@ -47,9 +48,10 @@ module.exports = (config, baseUrl) => {
 	app.use(require('./routes/user'))
 	app.use(require('./routes/pages'))
 
-	const checkAuth = require('./middlewares/middlewares')
+	const {checkAuthenAPI} = require('./middlewares/middlewares')
+	
 	return {
 		'app_admin': app, 
-		checkAuth
+		'checkAuthenAPI': checkAuthenAPI
 	}
 }

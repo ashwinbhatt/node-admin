@@ -3,7 +3,7 @@ const app = express()
 
 
 const node_admin = require('./app')
-const {app_admin, checkAuth} = node_admin(require('/home/abjb/workspace/configs/node-admin-config.json'), '/ashwin')
+const {app_admin, checkAuthenAPI} = node_admin(require('/home/abjb/workspace/configs/node-admin-config.json'), '/ashwin')
 
 app.use('/ashwin', app_admin)
 
