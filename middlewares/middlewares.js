@@ -1,4 +1,4 @@
-const {config, logger} = process.admin
+const {config, logger} = global.APP_VARIABLES
 const jwt = require('jsonwebtoken')
 const {readUser} = require('../routes/db_module')
 const JWT_SECRET = config.JWT_SECRET

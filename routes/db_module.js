@@ -1,4 +1,4 @@
-const {config, logger} = process.admin
+const {config, logger} = global.APP_VARIABLES
 const bcrypt = require('bcryptjs')
 const mongoose = require('mongoose')
 const User = mongoose.model('User')
@@ -184,7 +184,6 @@ const updateAUser = (username, password) => {
             })
     })
 }
-
 
 module.exports ={
     createUser: createUser,

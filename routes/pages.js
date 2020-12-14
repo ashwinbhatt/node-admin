@@ -1,56 +1,56 @@
-const {config, logger} = process.admin
+const {config, logger, baseUrl} = global.APP_VARIABLES
 const express = require('express')
 const router = express.Router()
 const { readUser, deleteUser } = require('./db_module')
 const {checkAuthen} = require('../middlewares/middlewares')
 
 
-router.get(config.app.baseurl, (req, res) => {
-    res.redirect(config.app.baseurl+'/login')
+router.get('/', (req, res) => {
+    res.redirect(baseUrl+'/login')
 });
 
 
-router.get(config.app.baseurl + '/login', (req, res) => {
-    res.render('../views/login.ejs', {'url_base': config.app.baseurl})
+router.get('/login', (req, res) => {
+    res.render('login.ejs', {'url_base': baseUrl})
 });
 
-router.get(config.app.baseurl + '/signup', checkAuthen,(req, res) => {
+router.get('/signup', checkAuthen,(req, res) => {
     const {authUser} = res.locals
     if(res.locals.authUser.role != 'admin'){
         return res.status(401).json({error: 'You are not authorised to add a user !'})
     }
-    res.render('../views/signup.ejs', {'url_base': config.app.baseurl, 'logged_user': authUser.username})  
+    res.render('signup.ejs', {'url_base': baseUrl, 'logged_user': authUser.username})  
 });
 
-router.get(config.app.baseurl + '/update', checkAuthen,(req, res) => {
+router.get('/update', checkAuthen,(req, res) => {
     const {authUser} = res.locals
     if(authUser.role != 'admin' ){
         return res.status(422).json({error: 'Update privillage denied'})
     }
-    res.render('../views/update.ejs', {'url_base': config.app.baseurl, 'logged_user': authUser.username})
+    res.render('update.ejs', {'url_base': baseUrl, 'logged_user': authUser.username})
 })
 
-router.get(config.app.baseurl + '/delete', checkAuthen,(req, res) => {
+router.get('/delete', checkAuthen,(req, res) => {
     const {authUser} = res.locals
     if(res.locals.authUser.role != 'admin'){
         return res.status(401).json({error: 'You are not authorised to delete a user !'})
     }
-    res.render('../views/delete.ejs', {'url_base': config.app.baseurl, 'logged_user': authUser.username})
+    res.render('delete.ejs', {'url_base': baseUrl, 'logged_user': authUser.username})
 })
 
-router.get(config.app.baseurl + '/user/:username', checkAuthen,(req, res) => {
+router.get('/user/:username', checkAuthen,(req, res) => {
     const {authUser} = res.locals
     if(req.params.username != authUser.username){
-        res.redirect(config.app.baseurl+'/login')
+        res.redirect(baseurl+'/login')
     }else{
         var signUrl=null, updateUser=null, deleteUser= null, updateNoAdmin=req.originalUrl+'/update', logsUrl= null; 
         if(authUser.role=='admin'){
-            signUrl= config.app.baseurl+'/signup'
-            updateUser=config.app.baseurl+'/update'
-            deleteUser=config.app.baseurl+'/delete'
-            logsUrl= config.app.baseurl+'/logs'
+            signUrl= baseUrl+'/signup'
+            updateUser=baseUrl+'/update'
+            deleteUser=baseUrl+'/delete'
+            logsUrl= baseUrl+'/logs'
         }
-        res.render('../views/userPage', {'url_base': config.app.baseurl, 
+        res.render('userPage.ejs', {'url_base': baseUrl, 
                                 'userData': authUser, 
                                 'signUrl': signUrl, 
                                 'updateUser': updateUser, 
@@ -62,7 +62,7 @@ router.get(config.app.baseurl + '/user/:username', checkAuthen,(req, res) => {
     }
 })
 
-router.get(config.app.baseurl+'/user/:username/update', checkAuthen,(req, res) => {
+router.get('/user/:username/update', checkAuthen,(req, res) => {
     const {authUser} = res.locals
     const {username} = req.params
     
@@ -74,14 +74,14 @@ router.get(config.app.baseurl+'/user/:username/update', checkAuthen,(req, res) =
         return res.status(422).json({error: 'You must be logged in as '+username});
     }
 
-    res.render('../views/userUpdate', {  'success_redirect': config.app.baseurl+'/user'+username, 
-                                'url_base': config.app.baseurl, 
+    res.render('userUpdate.ejs', {  'success_redirect': baseUrl+'/user'+username, 
+                                'url_base': baseUrl, 
                                 'logged_user': authUser.username
                             })
 });
 
 
-router.get(config.app.baseurl + '/jsonlogs' , checkAuthen,(req, res) => {
+router.get('/jsonlogs' , checkAuthen,(req, res) => {
     const {authUser} = res.locals
     if(authUser.role != 'admin' ){
         return res.status(422).json({error: 'Update privillage denied'})
@@ -98,14 +98,14 @@ router.get(config.app.baseurl + '/jsonlogs' , checkAuthen,(req, res) => {
 })
 
 
-router.get(config.app.baseurl+'/logs', checkAuthen, (req, res) => {
+router.get('/logs', checkAuthen, (req, res) => {
     const {authUser} = res.locals
 
     if(authUser.role != 'admin' ){
         return res.status(422).json({error: 'Update privillage denied'})
     }
 
-    res.render('../views/logs.ejs', {'url_base': config.app.baseurl})
+    res.render('logs.ejs', {'url_base': baseUrl})
 })
 
 

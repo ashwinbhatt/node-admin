@@ -15,7 +15,7 @@ class Logger {
       json: true,
       zippedArchive: false,
       maxSize: '5m',
-      maxFiles: '366d',
+      maxFiles: '1d',
       dirname: options.path,
       format: winston.format.combine(
         winston.format.timestamp(),

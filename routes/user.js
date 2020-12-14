@@ -1,4 +1,4 @@
-const {config, logger} = process.admin
+const {config, logger, baseUrl} = global.APP_VARIABLES
 const express = require('express')
 const router = express.Router()
 const bcrypt = require('bcryptjs')
@@ -11,7 +11,7 @@ const middlewares = require('../middlewares/middlewares');
 
 const strongPassFilter = (password) => {
     return new Promise((resolve, reject) => {
-        const {password_strength} = process.webConf.password;
+        const {password_strength} = config.password;
         const password_feature = {
             "lowerCase": !password_strength.lowerCase  || /[a-z]/.test(password),
             "upperCase": !password_strength.upperCase  || /[A-Z]/.test(password),
@@ -43,7 +43,7 @@ const strongPassFilter = (password) => {
 }
 
 
-router.post(config.app.baseurl +"/signup", checkAuthen, (req, res) => {
+router.post("/signup", checkAuthen, (req, res) => {
     const {username, password, role} = req.body
     const {authUser} = res.locals
     if(authUser.role != 'admin'){
@@ -62,7 +62,7 @@ router.post(config.app.baseurl +"/signup", checkAuthen, (req, res) => {
     })
 });
 
-router.post(config.app.baseurl +'/login' ,(req, res) => {
+router.post('/login' ,(req, res) => {
     const {username, password} = req.body
     if(!username || !password){
         return res.status(422).json({error : 'Provide username and password'})
@@ -79,7 +79,7 @@ router.post(config.app.baseurl +'/login' ,(req, res) => {
                 const token = jwt.sign({_id : savedUser._id, username: savedUser.username}, JWT_SECRET)
                 logger.verbose(`User Logged in : ${savedUser.username}`)
                 res.cookie('token', token);
-                res.json({message: 'Logged in ', redirect: config.app.baseurl+'/user/'+savedUser.username}) 
+                res.json({message: 'Logged in ', redirect: baseUrl+'/user/'+savedUser.username}) 
             }else{
                 return res.status(401).json({error : 'Invalid username or password'})
             }
@@ -93,14 +93,14 @@ router.post(config.app.baseurl +'/login' ,(req, res) => {
     })
 })
 
-router.post(config.app.baseurl+'/logout', checkAuthen, (req, res) => {
+router.post('/logout', checkAuthen, (req, res) => {
     res.clearCookie('token')
     logger.verbose(`User logged out : ${res.locals.authUser.username}`)
-    res.json({message: 'User logged out', redirect: config.app.baseurl})
+    res.json({message: 'User logged out', redirect: baseUrl})
 })
 
 
-router.put(config.app.baseurl +'/update', checkAuthen, (req, res) =>{
+router.put('/update', checkAuthen, (req, res) =>{
     const user = req.body.user
     const {authUser} = res.locals
     if(authUser.role != 'admin'){
@@ -120,7 +120,7 @@ router.put(config.app.baseurl +'/update', checkAuthen, (req, res) =>{
     })
 })
 
-router.delete(config.app.baseurl +'/delete', checkAuthen, (req, res) => {
+router.delete('/delete', checkAuthen, (req, res) => {
     const {username} = req.body
     const {authUser} = res.locals
     if(!username){
@@ -137,7 +137,7 @@ router.delete(config.app.baseurl +'/delete', checkAuthen, (req, res) => {
 })
 
 
-router.get(config.app.baseurl + '/users',checkAuthen ,(req, res) => {
+router.get('/users',checkAuthen ,(req, res) => {
     const {authUser} = res.locals
     if(authUser.role != 'admin'){
         return res.status(422).json({error: 'Update privillage denied'})
@@ -148,7 +148,7 @@ router.get(config.app.baseurl + '/users',checkAuthen ,(req, res) => {
 });
 
 
-router.put(config.app.baseurl+'/user/:username/update', checkAuthen, (req, res) => {
+router.put('/user/:username/update', checkAuthen, (req, res) => {
     const {authUser} = res.locals
     const {username} = req.params
     const {password} = req.body.user
@@ -161,8 +161,10 @@ router.put(config.app.baseurl+'/user/:username/update', checkAuthen, (req, res) 
         return res.status(422).json({error: 'You must be logged in as '+username});
     }
 
+    
     strongPassFilter(password).then(()=> {
         updateAUser(username, password).then(savedUser => {
+            logger.verbose(`Successfully changed password`)
             res.json({message: 'Password changed successfully'});
         }).catch(error => {
             res.status(422).json({error: 'Cannot update the user'})

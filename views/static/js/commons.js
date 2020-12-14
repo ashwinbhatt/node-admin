@@ -40,6 +40,7 @@ function loginReq() {
 		return response.json()
 	}).then(result => {
 		console.log(result.message)
+		console.log(result)
 		document.location.href = 'http://' + document.location.host + result.redirect
 	}).catch(error => {
 		Promise.resolve(error).then(res => {
